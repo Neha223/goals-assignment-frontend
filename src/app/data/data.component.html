@@ -1,0 +1,123 @@
+<div class="layout-content-body">
+  <div class="title-bar">
+    <h1 class="title-bar-title">
+      <span class="d-ib">Records</span>
+    </h1>
+    
+  </div><!-- /.title-bar -->
+    <div class="row">
+      <div class="col-xs-12">
+          <app-custom-filters [filterArr]="filter" (searchByName) = 'OnApplyFilter($event)' [dataInstance]="datatableInstance" [url] = "urlObj.listUrl"></app-custom-filters>
+      </div>
+    </div>
+  <div class="row gutter-xs">
+    <div class="col-xs-12">
+      <div class="card">
+        <div class="card-body">
+            <ul class="nav nav-pills">
+                <li class="active"><a href="#pending" data-toggle="tab" (click)="getData('pending')">Pending</a></li>
+                <li><a href="#approved" data-toggle="tab" (click)="getData('approved')">Approved</a></li>
+                <li><a href="#rejected" data-toggle="tab" (click)="getData('rejected')">Rejected</a></li>
+            </ul>
+            <div class="tab-content clearfix">
+                <div class="tab-pane active" id="pending" [ngClass]="{ 'active':activeTab==='pending'}">
+                  <div class="row table-responsive">
+                    <div class="pull-left" *ngIf="pager1">
+                        <span>Showing {{pager1.startIndex+1}} to {{pager1.endIndex+1}} of {{pager1.totalItems}} entries
+                        </span><br/> <br/>
+                    </div>
+                    <div *ngIf="totalRecords1 || recordLimit1">
+                      <app-pagination [totalRecords]="totalRecords1" 
+                                        [recordLimit]="recordLimit1"
+                                        (pageChange)="setPage($event)">
+                      </app-pagination>
+                    </div>
+                      <!-- <table id="first-table" datatable class="table table-bordered table-striped table-nowrap dataTable" [dtOptions]="dtOptions[0]" width="100%">
+                        <thead>
+                          <tr>
+                            <th><input type='checkbox' [(ngModel)]="firstCheckbox" data-product-id-checkbox="` + full.id + `" name='firstCheckbox' id="id-select-all" value="All" /></th>
+                            <th>Uploaded Image</th>
+                            <th (click)="sort('name')"  title="Sort By Name">{{productType}} Name
+                                <span class="icon sort-icon" *ngIf="key =='name'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th>Weight</th>
+                            <th (click)="sort('createdAtUtc')"  title="Sort By Date">Added On
+                                <span class="icon sort-icon" *ngIf="key =='createdAtUtc'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th (click)="sort('retailPrice')"  title="Sort By MRP">MRP
+                                <span class="icon sort-icon" *ngIf="key =='retailPrice'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th (click)="sort('price')"  title="Sort By SF Price">SF Price
+                                <span class="icon sort-icon" *ngIf="key =='price'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th (click)="sort('variantsCount')"  title="Sort By Variants Count">Variants Count
+                                <span class="icon sort-icon" *ngIf="key =='variantsCount'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th (click)="sort('inactiveVariantsCount')"  title="Sort By Inactive Variants Count">Inactive Variants Count
+                                <span class="icon sort-icon" *ngIf="key =='inactiveVariantsCount'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                      </table> -->
+                      <div class="pull-left">
+                          <span>Total Records : <strong>{{totalRecords1}}</strong></span>
+                      </div>
+                  </div>
+                </div>
+                <div class="tab-pane active" id="unpublished-data" [ngClass]="{ 'active':activeTab==='unpublished-data'}">
+                    <div class="row table-responsive">
+                        <div class="pull-left" *ngIf="pager2">
+                            <span>Showing {{pager2.startIndex+1}} to {{pager2.endIndex+1}} of {{pager2.totalItems}} entries
+                            </span><br/> <br/>
+                        </div>
+                        <p class="pull-right">
+                            <a class="btn btn-primary btn-pull-right" (click)="publishMultipleSeeds()">Publish {{productType}}s</a>
+                        </p>
+                        <table id="second-table" datatable class="table table-bordered table-striped table-nowrap dataTable" [dtOptions]="dtOptions[1]" width="100%">
+                            <thead>
+                                <tr>
+                                    <th><input type='checkbox' [(ngModel)]="secondCheckbox" data-product-id-checkbox="` + full.id + `" id="id-select-second-all" name='secondCheckbox' value="All" /></th>
+                                    <th>Uploaded Image</th>
+                                    <th (click)="sort('name')"  title="Sort By Name">{{productType}} Name
+                                        <span class="icon sort-icon" *ngIf="key =='name'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                                    </th>
+                                    <th>Weight</th>
+                                    <th (click)="sort('createdAtUtc')"  title="Sort By Date">Added On
+                                        <span class="icon sort-icon" *ngIf="key =='createdAtUtc'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                                    </th>
+                                    <th (click)="sort('retailPrice')"  title="Sort By MRP">MRP
+                                        <span class="icon sort-icon" *ngIf="key =='retailPrice'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                                    </th>
+                                    <th (click)="sort('price')"  title="Sort By SF Price">SF Price
+                                        <span class="icon sort-icon" *ngIf="key =='price'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                                    </th>
+                                    <th (click)="sort('variantsCount')"  title="Sort By Variants Count">Variants Count
+                                        <span class="icon sort-icon" *ngIf="key =='variantsCount'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                                    </th>
+                                    <th (click)="sort('inactiveVariantsCount')"  title="Sort By Inactive Variants Count">Inactive Variants Count
+                                        <span class="icon sort-icon" *ngIf="key =='inactiveVariantsCount'" [ngClass]="{'icon-chevron-up':reverse,'icon-chevron-down':!reverse}"></span>
+                                    </th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                  </tr>
+                            </thead> 
+                          </table>
+                          <div class="pull-left">
+                              <span>Total Records : <strong>{{totalRecords2}}</strong></span>
+                          </div>
+                          <div *ngIf="totalRecords2 || recordLimit2">
+                            <app-pagination [totalRecords]="totalRecords2" 
+                                              [recordLimit]="recordLimit2"
+                                              (pageChange)="setPage($event)">
+                            </app-pagination>
+                          </div>
+                      </div>
+                </div>
+              </div>
+              </div>
+              </div>
+              </div>
+              </div>
+</div><!-- /.layout-content-body -->
