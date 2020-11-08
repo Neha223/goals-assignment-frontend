@@ -37,23 +37,67 @@ export class SignupComponent implements OnInit {
         this.imageSrc = reader.result as string;
      
         this.signupForm.patchValue({
-          logoSrc: reader.result
+          logoSrc: file
         });
    
       };
    
     }
   }
+  get f() { return this.signupForm.controls; }
   onSubmit() {
-    this.restApi.signup(this.signupForm.value)
+    const fileName = this.signupForm.value.logo;
+    const userDetails = {
+      name : this.signupForm.value.details.name,
+      designation: this.signupForm.value.details.designation,
+      phone: this.signupForm.value.details.phone,
+      email: this.signupForm.value.details.email
+    }
+    const formData = new FormData();
+    formData.append('file', this.signupForm.get('logoSrc').value,fileName);
+    formData.set('fileName', this.signupForm.value.logo);
+    formData.set('brandName', this.signupForm.value.name);
+    formData.set('detailsName', this.signupForm.value.details.name);
+    formData.set('detailsDesignation', this.signupForm.value.details.designation);
+    formData.set('detailsPhone', this.signupForm.value.details.phone);
+    formData.set('detailsEmail', this.signupForm.value.details.email);
+    this.restApi.signup(formData)
 
       .subscribe(res => {
 
         console.log(res);
 
         alert('Uploaded Successfully.');
+        this.signupForm.reset();
+        this.imageSrc = '';
 
       })
+  }
+  checkPhone(phone) {
+    this.restApi.checkPhone(phone).subscribe(res => {
+      const data = res.data;
+      if(data.length != 0) {
+        alert("Phone should be unique");
+        this.signupForm.patchValue({
+          details: {
+            phone: ''
+          }
+        });
+      }
+    })
+  }
+  checkEmail(email) {
+    this.restApi.checkEmail(email).subscribe(res => {
+      const data = res.data;
+      if(data.length != 0) {
+        alert("Email should be unique");
+        this.signupForm.patchValue({
+          details: {
+            email: ''
+          }
+        });
+      }
+    })
   }
 
 }
